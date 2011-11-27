@@ -27,7 +27,7 @@
       :report "Delete output file and proceed"
       (declare (ignore v))
       (delete-file output)))
-  (run gpg
+  (run "gpg"
        (when as
          (list :local-user as))
        :output output
