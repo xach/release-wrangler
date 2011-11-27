@@ -4,7 +4,8 @@
   :serial t
   :author "Zach Beane <xach@xach.com>"
   :description "Prepare & release one of my CL projects."
-  :depends-on (#:commando)
+  :depends-on (#:commando
+               #:split-sequence)
   :components ((:file "package")
                (:file "commands")
                (:file "date")

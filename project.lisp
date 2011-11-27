@@ -44,6 +44,12 @@
     (in-temporary-directory (format nil "~A/" (name project))
       (check-out project)
       (with-posix-cwd (name project)
+        (let ((current-version (current-version project)))
+          (unless (member new-version
+                          (successive-versions current-version)
+                          :test 'equalp)
+            (error "Bad version transition ~A -> ~A"
+                   current-version new-version)))
         (update-system-file project new-version)
         (update-documentation project new-version)
         (commit project new-version)

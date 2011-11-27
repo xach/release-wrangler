@@ -2,6 +2,22 @@
 
 (in-package #:release-wrangler)
 
+(defun successive-versions (version)
+  "Return reasonable candidates for successive versions of VERSION."
+  (let ((parts (mapcar 'parse-integer (split-sequence #\. version))))
+    (labels ((incremented (v)
+               (let ((v+ (copy-list v)))
+                 (incf (first (last v+)))
+                 v+))
+             (extended (v)
+               (append v (list 1)))
+             (rejoin (v)
+               (format nil "~{~D~^.~}" v)))
+      (mapcar #'rejoin
+              (list* (extended parts)
+                     (mapcar #'incremented
+                             (maplist 'reverse (reverse parts))))))))
+
 (defun after-search (substring string)
   (let ((pos (search substring string)))
     (when pos
