@@ -10,6 +10,5 @@
                (:file "commands")
                (:file "date")
                (:file "versions")
-               (:file "project")
-               (:file "release-wrangler")))
+               (:file "project")))
 
