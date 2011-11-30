@@ -116,12 +116,11 @@
 
 
 (defgeneric release (project new-version)
+  ;; FIXME: There should be some restarts, like a big hammer of
+  ;; deleting the local checkout and trying again.
   (:method (project new-version)
-    (let ((path (checkout-directory project))
-          (name (name project)))
-      (check-out project)
-      (with-posix-cwd path
-        (let ((current-version (current-version project)))
+    (in-project-directory project
+      (let ((current-version (current-version project)))
           (unless (member new-version
                           (successive-versions current-version)
                           :test 'equalp)
@@ -130,4 +129,6 @@
         (update-system-file project new-version)
         (update-documentation project new-version)
         (commit project new-version)
-        (tag project new-version)))))
+        (tag project new-version)
+        (push-upstream project)
+        (publish project))))
