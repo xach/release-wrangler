@@ -10,3 +10,4 @@ It's highly customized to my project structure and is not meant to be
 useful to anyone else.
 
 
+The simplest usage is (release project-name new-version-number).
