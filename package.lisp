@@ -6,6 +6,8 @@
                           #:split-sequence)
   (:shadowing-import-from #:commando
                           #:run
+                          #:run-output-lines
                           #:in-temporary-directory
+                          #:with-temporary-directory
                           #:with-posix-cwd))
 

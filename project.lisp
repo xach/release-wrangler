@@ -2,6 +2,11 @@
 
 (in-package #:release-wrangler)
 
+(defvar *web-host* "cumberland.presumpscot.net")
+(defvar *web-directory* "/var/www/www.xach.com")
+(defvar *user* "xach")
+
+
 (defclass project ()
   ((name
     :initarg :name
@@ -31,7 +36,8 @@
                                   :home "release-wrangler" (name project))))
 
 (defmethod git-url (project)
-  (format nil "git@github.com:xach/~A.git"
+  (format nil "git@github.com:~A/~A.git"
+          *user*
           (name project)))
 
 (defmethod check-out (project)
@@ -109,10 +115,11 @@
       (with-posix-cwd base
         (run "tar" "czvf" "release-wrangler.tgz" "lisp/")
         (scp "release-wrangler.tgz"
-             :host "bradley.xach.com"
+             :host *web-host*
              :remote-path "tmp/"))
-      (ssh t "bradley.xach.com"
-           "cd www.xach.com && tar xzvf ~/tmp/release-wrangler.tgz"))))
+      (ssh t *web-host*
+           (format nil "cd ~S && tar xzvf ~~/tmp/release-wrangler.tgz"
+                   *web-directory*)))))
 
 
 (defgeneric release (project new-version)
