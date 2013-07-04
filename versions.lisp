@@ -21,13 +21,15 @@
 (defun after-search (substring string)
   (let ((pos (search substring string)))
     (when pos
-      (+ pos (length substring)))))
+      (values (+ pos (length substring))
+              pos))))
 
 (defun system-line-version (line)
-  (let ((pos (after-search ":version " line)))
+  (multiple-value-bind (pos start)
+      (after-search ":version " line)
     (when pos
       (values (read-from-string line t t :start pos)
-              pos))))
+              start))))
 
 (defun system-file-version (file)
   (block nil
