@@ -33,7 +33,19 @@
 
 (defmethod checkout-directory (project)
   (make-pathname :directory (list :absolute
-                                  :home "release-wrangler" (name project))))
+                                  :home
+                                  ".cache"
+                                  "release-wrangler" (name project))))
+
+(defmacro in-project-directory (project &body body)
+  (let ((proj (copy-symbol 'project))
+        (path (copy-symbol 'path)))
+    `(let* ((,proj ,project)
+            (,path (checkout-directory ,proj)))
+       (unless (probe-file ,path)
+         (check-out ,proj))
+       (with-posix-cwd (checkout-directory ,proj)
+         ,@body))))
 
 (defmethod git-url (project)
   (format nil "git@github.com:~A/~A.git"
@@ -41,8 +53,8 @@
           (name project)))
 
 (defmethod check-out (project)
-  (ensure-directories-exist "~/release-wrangler/")
-  (with-posix-cwd "~/release-wrangler/"
+  (ensure-directories-exist "~/.cache/release-wrangler/")
+  (with-posix-cwd "~/.cache/release-wrangler/"
     (if (probe-file (checkout-directory project))
         (with-posix-cwd (checkout-directory project)
           (run "git" "pull"))
@@ -70,16 +82,6 @@
    (parse-namestring (concatenate 'string (namestring pathname)
                                   "."
                                   suffix))))
-
-(defmacro in-project-directory (project &body body)
-  (let ((proj (copy-symbol 'project))
-        (path (copy-symbol 'path)))
-    `(let* ((,proj ,project)
-            (,path (checkout-directory ,proj)))
-       (unless (probe-file ,path)
-         (check-out ,proj))
-       (with-posix-cwd (checkout-directory ,proj)
-         ,@body))))
 
 (defmethod tags (project)
   (in-project-directory project
