@@ -2,7 +2,7 @@
 
 (in-package #:release-wrangler)
 
-(defvar *web-host* "cumberland.presumpscot.net")
+(defvar *web-host* "xach.com")
 (defvar *web-directory* "/var/www/www.xach.com")
 (defvar *user* "xach")
 
