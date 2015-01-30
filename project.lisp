@@ -6,6 +6,8 @@
 (defvar *web-directory* "/var/www/www.xach.com")
 (defvar *user* "xach")
 
+(defun clear-cache ()
+  (run "rm" "-rf" #p"~/.cache/release-wrangler/"))
 
 (defclass project ()
   ((name
@@ -91,6 +93,7 @@
 
 
 (defmethod publish (project)
+  (ensure-directories-exist "~/release-wrangler/")
   (with-temporary-directory (base "~/release-wrangler/publish/")
     (let* ((html (merge-pathnames "lisp/" base))
            (name (name project))
